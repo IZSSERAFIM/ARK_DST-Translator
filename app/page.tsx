@@ -1,12 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  ArrowLeftRight,
-  Languages,
-  Sparkles,
-  Timer
-} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeftRight, Languages, Sparkles, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -38,6 +33,8 @@ export default function HomePage() {
   const [translation, setTranslation] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const outputRef = useRef<HTMLTextAreaElement>(null);
 
   const canTranslate = useMemo(
     () => text.trim().length > 0 && sourceLanguage !== targetLanguage,
@@ -81,6 +78,21 @@ export default function HomePage() {
       setLoading(false);
     }
   };
+
+  const autoResize = (el: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = "auto";
+    const nextHeight = Math.min(Math.max(el.scrollHeight, 200), 700);
+    el.style.height = `${nextHeight}px`;
+  };
+
+  useEffect(() => {
+    autoResize(inputRef.current);
+  }, [text]);
+
+  useEffect(() => {
+    autoResize(outputRef.current);
+  }, [translation]);
 
   return (
     <main className="min-h-screen px-6 pb-24 pt-14">
@@ -141,9 +153,11 @@ export default function HomePage() {
                 </SelectContent>
               </Select>
               <Textarea
+                ref={inputRef}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Type or paste text to translate..."
+                className="min-h-[220px]"
               />
             </div>
 
@@ -178,10 +192,11 @@ export default function HomePage() {
                 </SelectContent>
               </Select>
               <Textarea
+                ref={outputRef}
                 value={translation}
                 readOnly
                 placeholder="Translation will appear here"
-                className="min-h-[160px] bg-white/5"
+                className="min-h-[220px] bg-white/5"
               />
             </div>
           </div>
