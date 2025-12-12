@@ -10,7 +10,12 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Ark Translator",
-  description: "Fast, polished translations powered by Ark / Doubao Seed Translation"
+  description: "Fast, polished translations powered by Ark / Doubao Seed Translation",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg"
+  }
 };
 
 export default function RootLayout({
