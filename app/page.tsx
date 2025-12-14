@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeftRight, Languages, Sparkles, Timer } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Check,
+  Languages,
+  Sparkles,
+  Timer
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -33,8 +39,10 @@ export default function HomePage() {
   const [translation, setTranslation] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const outputRef = useRef<HTMLTextAreaElement>(null);
+  const copyResetRef = useRef<NodeJS.Timeout | null>(null);
 
   const canTranslate = useMemo(
     () => text.trim().length > 0 && sourceLanguage !== targetLanguage,
@@ -80,6 +88,9 @@ export default function HomePage() {
     if (!translation) return;
     try {
       await navigator.clipboard.writeText(translation.trimEnd());
+      setCopied(true);
+      if (copyResetRef.current) clearTimeout(copyResetRef.current);
+      copyResetRef.current = setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Copy failed", err);
     }
@@ -99,6 +110,12 @@ export default function HomePage() {
   useEffect(() => {
     autoResize(outputRef.current);
   }, [translation]);
+
+  useEffect(() => {
+    return () => {
+      if (copyResetRef.current) clearTimeout(copyResetRef.current);
+    };
+  }, []);
 
   return (
     <main className="min-h-screen px-6 pb-24 pt-14">
@@ -230,8 +247,16 @@ export default function HomePage() {
                 variant="secondary"
                 onClick={handleCopy}
                 disabled={!translation}
+                className="gap-2"
               >
-                Copy translation
+                {copied ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Copied
+                  </>
+                ) : (
+                  "Copy translation"
+                )}
               </Button>
             </div>
           </div>
