@@ -79,7 +79,7 @@ export default function HomePage() {
   const handleCopy = async () => {
     if (!translation) return;
     try {
-      await navigator.clipboard.writeText(translation);
+      await navigator.clipboard.writeText(translation.trimEnd());
     } catch (err) {
       console.error("Copy failed", err);
     }
@@ -102,7 +102,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen px-6 pb-24 pt-14">
-      <div className="mx-auto max-w-7xl space-y-12">
+      <div className="mx-auto max-w-9xl space-y-12">
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-emerald-400 text-slate-950 font-black grid place-items-center shadow-lg shadow-cyan-500/40">
@@ -122,7 +122,7 @@ export default function HomePage() {
         </header>
 
         <div className="glass rounded-3xl p-8 shadow-2xl shadow-black/30">
-          <div className="mb-8 flex flex-wrap items-center gap-6">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-6">
             <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
               <Languages className="h-5 w-5 text-cyan-400" />
               <div>
@@ -134,21 +134,20 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <Timer className="h-4 w-4" />
-              <span>Fast responses with caching off for freshness</span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <Timer className="h-4 w-4" />
+                <span>Fast responses with caching off for freshness</span>
+              </div>
+              <Button
+                type="button"
+                size="lg"
+                onClick={handleTranslate}
+                disabled={!canTranslate || loading}
+              >
+                {loading ? "Translating..." : "Translate"}
+              </Button>
             </div>
-          </div>
-
-          <div className="mb-6 flex justify-end">
-            <Button
-              type="button"
-              size="lg"
-              onClick={handleTranslate}
-              disabled={!canTranslate || loading}
-            >
-              {loading ? "Translating..." : "Translate"}
-            </Button>
           </div>
 
           <div className="grid gap-6 md:grid-cols-[1fr_auto_1fr] items-start">
