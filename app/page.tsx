@@ -44,14 +44,11 @@ export default function HomePage() {
   const handleSwap = () => {
     setSourceLanguage(targetLanguage);
     setTargetLanguage(sourceLanguage);
-    if (translation) {
-      setText(translation);
-      setTranslation("");
-    }
   };
 
   const handleTranslate = async () => {
     if (!canTranslate) return;
+    setTranslation("");
     setError(null);
     setLoading(true);
     try {
@@ -79,6 +76,15 @@ export default function HomePage() {
     }
   };
 
+  const handleCopy = async () => {
+    if (!translation) return;
+    try {
+      await navigator.clipboard.writeText(translation);
+    } catch (err) {
+      console.error("Copy failed", err);
+    }
+  };
+
   const autoResize = (el: HTMLTextAreaElement | null) => {
     if (!el) return;
     el.style.height = "auto";
@@ -96,7 +102,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen px-6 pb-24 pt-14">
-      <div className="mx-auto max-w-6xl space-y-12">
+      <div className="mx-auto max-w-7xl space-y-12">
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-emerald-400 text-slate-950 font-black grid place-items-center shadow-lg shadow-cyan-500/40">
@@ -134,6 +140,17 @@ export default function HomePage() {
             </div>
           </div>
 
+          <div className="mb-6 flex justify-end">
+            <Button
+              type="button"
+              size="lg"
+              onClick={handleTranslate}
+              disabled={!canTranslate || loading}
+            >
+              {loading ? "Translating..." : "Translate"}
+            </Button>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-[1fr_auto_1fr] items-start">
             <div className="space-y-3">
               <Label>Source language</Label>
@@ -157,7 +174,7 @@ export default function HomePage() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Type or paste text to translate..."
-                className="min-h-[220px]"
+                className="min-h-[220px] w-full"
               />
             </div>
 
@@ -196,7 +213,7 @@ export default function HomePage() {
                 value={translation}
                 readOnly
                 placeholder="Translation will appear here"
-                className="min-h-[220px] bg-white/5"
+                className="min-h-[220px] w-full bg-white/5"
               />
             </div>
           </div>
@@ -211,11 +228,11 @@ export default function HomePage() {
               )}
               <Button
                 type="button"
-                size="lg"
-                onClick={handleTranslate}
-                disabled={!canTranslate || loading}
+                variant="secondary"
+                onClick={handleCopy}
+                disabled={!translation}
               >
-                {loading ? "Translating..." : "Translate"}
+                Copy translation
               </Button>
             </div>
           </div>
