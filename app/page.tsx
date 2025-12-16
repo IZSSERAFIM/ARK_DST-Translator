@@ -122,7 +122,7 @@ export default function HomePage() {
       <div className="mx-auto max-w-9xl space-y-12">
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-emerald-400 text-slate-950 font-black grid place-items-center shadow-lg shadow-cyan-500/40">
+            <div className="h-10 w-10 flex-shrink-0 rounded-2xl bg-gradient-to-br from-cyan-400 to-emerald-400 text-slate-950 font-black grid place-items-center shadow-lg shadow-cyan-500/40">
               A
             </div>
             <div>
